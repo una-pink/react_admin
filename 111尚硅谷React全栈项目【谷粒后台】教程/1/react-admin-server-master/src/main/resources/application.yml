@@ -1,0 +1,136 @@
+spring:
+  kafka:
+    bootstrap-servers: 192.168.0.103:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+      retries: 0
+      batch-size: 16384
+      buffer-memory: 33554432
+    consumer:
+      enable-auto-commit: false
+      auto-commit-interval: 100
+      auto-offset-reset: earliest
+      max-poll-records: 500
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual
+      poll-timeout: 5005
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  redis:
+    database: 0
+    password: mfinetoo
+    timeout: 10000
+    lettuce:
+      pool:
+        min-idle: 30
+        max-idle: 100
+        max-active: 1000
+        max-wait: 10000ms
+    cluster:
+      nodes: 159.75.128.32:6379, 159.75.128.32:6380,159.75.128.32:6381,159.75.128.32:6389, 159.75.128.32:6390, 159.75.128.32:6391
+      max-redirects: 3
+
+  datasource:
+    druid:
+      #   数据源基本配置
+      username: root
+      password: mnotfine
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://159.75.128.32:3306/react_admin?useUnicode=true&characterEncoding=utf-8
+      #   数据源其他配置
+      #初始化时建立物理连接的个数
+      initial-size: 5
+      #最小连接池数量
+      min-idle: 5
+      #最大连接池数量 maxIdle已经不再使用
+      max-active: 20
+      #获取连接时最大等待时间，单位毫秒
+      max-wait: 60000
+      #申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      #既作为检测的间隔时间又作为testWhileIdel执行的依据
+      time-between-eviction-runs-millis: 60000
+      #销毁线程时检测当前连接的最后活动时间和当前时间差大于该值时，关闭当前连接
+      min-evictable-idle-time-millis: 30000
+      #用来检测连接是否有效的sql 必须是一个查询语句
+      #mysql中为 select 'x'
+      #oracle中为 select 1 from dual
+      validation-query: select 'x'
+      #申请连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-on-borrow: false
+      #归还连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-on-return: false
+      # 是否缓存preparedStatement
+      pool-prepared-statements: true
+      #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      #配置监拉统计挡成的filters. stat: 监控统计、Log4j:日志记录、waLL: 防御sqL注入
+      #如果启用日志记录时报错java.lang.ClassNotFoundException: org.apache.log4j.Priority
+      #则导入Log4j 依赖即时，Maven 地址: https://mvnrepository. com/artifact/log4j/log4
+      filters: stat,wall,log4j2
+      max-pool-prepared-statement-per-connection-size: 20
+      use-global-data-source-stat: true
+      connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+
+      # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
+      stat-view-servlet:
+        enabled: true
+        url-pattern: "/druid/*"
+        login-password: admin
+        login-username: admin
+        allow: ""
+
+      #      # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+      web-stat-filter:
+        enabled: false
+        exclusions: "*.js,*.css,/druid/*"
+  application:
+    name: web-admin
+  boot:
+    admin:
+      client:
+        url: http://localhost:5000
+
+
+#    client:
+#      url: http://localhost:5000/application
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.df.pojo
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+  helper-dialect: mysql
+server:
+  port: 5000
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+    info:
+      enabled: true
+    liquibase:
+      enabled: true
+    metrics:
+      enabled: true
